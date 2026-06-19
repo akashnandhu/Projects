@@ -1,0 +1,85 @@
+{% extends 'chat/base.html' %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
+    <h1 class="text-2xl font-bold text-gray-900 mb-6">Alert Dashboard</h1>
+    
+    <!-- Stats Cards -->
+    <div class="grid grid-cols-1 gap-5 sm:grid-cols-4 mb-8">
+        <div class="bg-white overflow-hidden shadow rounded-lg border border-gray-100">
+            <div class="px-4 py-5 sm:p-6">
+                <dt class="text-sm font-medium text-gray-500 truncate">Total Alerts</dt>
+                <dd class="mt-1 text-3xl font-semibold text-gray-900">{{ stats.total }}</dd>
+            </div>
+        </div>
+        <div class="bg-amber-50 overflow-hidden shadow rounded-lg border border-amber-200">
+            <div class="px-4 py-5 sm:p-6">
+                <dt class="text-sm font-medium text-amber-800 truncate">Pending Review</dt>
+                <dd class="mt-1 text-3xl font-semibold text-amber-900">{{ stats.pending }}</dd>
+            </div>
+        </div>
+        <div class="bg-red-50 overflow-hidden shadow rounded-lg border border-red-200">
+            <div class="px-4 py-5 sm:p-6">
+                <dt class="text-sm font-medium text-red-800 truncate">Escalated</dt>
+                <dd class="mt-1 text-3xl font-semibold text-red-900">{{ stats.escalated }}</dd>
+            </div>
+        </div>
+        <div class="bg-green-50 overflow-hidden shadow rounded-lg border border-green-200">
+            <div class="px-4 py-5 sm:p-6">
+                <dt class="text-sm font-medium text-green-800 truncate">Resolved</dt>
+                <dd class="mt-1 text-3xl font-semibold text-green-900">{{ stats.resolved }}</dd>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filters placeholder -->
+    <div class="flex mb-4 gap-4">
+        <a href="?status=PENDING" class="text-sm bg-gray-100 text-gray-700 px-3 py-1 rounded hover:bg-gray-200">Pending</a>
+        <a href="?" class="text-sm bg-gray-100 text-gray-700 px-3 py-1 rounded hover:bg-gray-200">All</a>
+    </div>
+
+    <!-- Alert List -->
+    <div class="bg-white shadow overflow-hidden sm:rounded-md border border-gray-200">
+        <ul role="list" class="divide-y divide-gray-200">
+            {% for alert in alerts %}
+            <li>
+                <a href="{% url 'alert_detail' alert.id %}" class="block hover:bg-gray-50 transition">
+                    <div class="px-4 py-4 sm:px-6">
+                        <div class="flex items-center justify-between">
+                            <p class="text-sm font-medium text-blue-600 truncate">
+                                {{ alert.user.get_display_alias|default:alert.user.username }}
+                            </p>
+                            <div class="ml-2 flex-shrink-0 flex">
+                                {% if alert.alert_type == 'PUBLIC_SAFETY' %}
+                                    <p class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">
+                                        {{ alert.get_alert_type_display }}
+                                    </p>
+                                {% else %}
+                                    <p class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-amber-100 text-amber-800">
+                                        {{ alert.get_alert_type_display }}
+                                    </p>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="mt-2 sm:flex sm:justify-between">
+                            <div class="sm:flex">
+                                <p class="flex items-center text-sm text-gray-500">
+                                    Status: <span class="ml-1 font-medium">{{ alert.get_status_display }}</span>
+                                </p>
+                            </div>
+                            <div class="mt-2 flex items-center text-sm text-gray-500 sm:mt-0">
+                                <p>
+                                    {{ alert.created_at|timesince }} ago
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </li>
+            {% empty %}
+            <li class="px-4 py-8 text-center text-gray-500">No alerts found.</li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+{% endblock %}
