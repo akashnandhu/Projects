@@ -2,37 +2,52 @@
 {% load static %}
 
 {% block content %}
-<div class="flex-grow flex flex-col h-[calc(100vh-4rem)] max-w-4xl w-full mx-auto p-4 relative">
+<div class="flex-grow flex flex-col max-w-5xl w-full mx-auto p-6 relative">
     
-    <!-- Connection Status -->
-    <div class="flex items-center text-xs text-gray-500 mb-2">
-        <span id="connection-status-indicator" class="h-2 w-2 rounded-full bg-red-500 mr-2"></span>
-        <span id="connection-status-text">Disconnected</span>
+    <!-- Header info -->
+    <div class="flex items-center justify-between mb-6">
+        <div>
+            <h1 class="text-2xl font-bold text-gray-900 tracking-tight">Your Dashboard</h1>
+            <p class="text-sm text-gray-500 mt-1">Connect with a support professional anonymously and securely.</p>
+        </div>
+        <div class="flex items-center bg-white px-4 py-2 rounded-full shadow-sm border border-gray-100">
+            <span id="connection-status-indicator" class="h-2.5 w-2.5 rounded-full bg-red-500 mr-2 shadow-[0_0_8px_rgba(239,68,68,0.6)]"></span>
+            <span id="connection-status-text" class="text-sm font-medium text-gray-600">Disconnected</span>
+        </div>
     </div>
 
     <!-- Chat Window -->
-    <div class="flex-grow bg-white border border-gray-200 rounded-lg shadow-sm flex flex-col overflow-hidden relative">
+    <div class="flex-grow bg-white border border-gray-100 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] flex flex-col overflow-hidden relative min-h-[60vh]">
         
         <!-- Messages Area -->
-        <div id="chat-messages" class="flex-grow p-4 overflow-y-auto flex flex-col space-y-4">
+        <div id="chat-messages" class="flex-grow p-6 overflow-y-auto flex flex-col space-y-6 bg-slate-50/50">
             <!-- Messages will be injected here -->
+            <div class="text-center text-xs font-semibold text-gray-400 my-4 uppercase tracking-wider">Session Started</div>
         </div>
 
         <!-- Typing Indicator -->
-        <div id="typing-indicator" class="hidden p-4">
-            <div class="flex items-center text-gray-400 italic text-sm">
-                Bot is typing<span class="animate-pulse ml-1">...</span>
+        <div id="typing-indicator" class="hidden p-4 bg-white border-t border-gray-50">
+            <div class="flex items-center text-gray-500 text-sm font-medium">
+                <span class="mr-2">Support is typing</span>
+                <span class="flex space-x-1">
+                    <span class="h-1.5 w-1.5 bg-gray-400 rounded-full animate-bounce" style="animation-delay: 0s"></span>
+                    <span class="h-1.5 w-1.5 bg-gray-400 rounded-full animate-bounce" style="animation-delay: 0.2s"></span>
+                    <span class="h-1.5 w-1.5 bg-gray-400 rounded-full animate-bounce" style="animation-delay: 0.4s"></span>
+                </span>
             </div>
         </div>
 
         <!-- Input Area -->
-        <div class="p-4 bg-gray-50 border-t border-gray-200">
-            <div class="flex space-x-2">
-                <textarea id="chat-input" class="flex-grow resize-none rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 py-2 px-3" rows="1" placeholder="Type your message..."></textarea>
-                <button id="send-button" class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition self-end">
-                    Send
+        <div class="p-5 bg-white border-t border-gray-100">
+            <div class="flex space-x-3 items-end">
+                <div class="flex-grow relative">
+                    <textarea id="chat-input" class="w-full resize-none rounded-xl border-gray-200 border bg-gray-50 focus:bg-white focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 py-3 px-4 pr-12 transition-all text-sm" rows="1" placeholder="Type your message securely..."></textarea>
+                </div>
+                <button id="send-button" class="flex-shrink-0 h-[46px] w-[46px] bg-gradient-to-r from-blue-600 to-sky-500 text-white rounded-xl hover:from-blue-700 hover:to-sky-600 transition-all flex items-center justify-center shadow-md shadow-blue-500/20 transform hover:-translate-y-0.5">
+                    <svg class="w-5 h-5 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path></svg>
                 </button>
             </div>
+            <p class="text-[11px] text-gray-400 mt-2 text-center">Your conversation is end-to-end encrypted and completely confidential.</p>
         </div>
     </div>
 

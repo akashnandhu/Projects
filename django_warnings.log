@@ -3,3 +3,5 @@ Not Found: /favicon.ico
 Listen failure: Couldn't listen on 127.0.0.1:8000: [WinError 10048] Only one usage of each socket address (protocol/network address/port) is normally permitted.
 Not Found: /favicon.ico
 [33mHTTP GET /favicon.ico 404 [0.01, 127.0.0.1:50601][0m
+Not Found: /favicon.ico
+[33mHTTP GET /favicon.ico 404 [0.02, 127.0.0.1:63495][0m
