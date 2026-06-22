@@ -5,3 +5,5 @@ Not Found: /favicon.ico
 [33mHTTP GET /favicon.ico 404 [0.01, 127.0.0.1:50601][0m
 Not Found: /favicon.ico
 [33mHTTP GET /favicon.ico 404 [0.02, 127.0.0.1:63495][0m
+Not Found: /favicon.ico
+[33mHTTP GET /favicon.ico 404 [0.02, 127.0.0.1:62409][0m
