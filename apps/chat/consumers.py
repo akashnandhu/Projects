@@ -3,6 +3,7 @@ Real-Time WebSocket Consumer for Chat.
 """
 import json
 import random
+import asyncio
 from channels.generic.websocket import AsyncWebsocketConsumer
 from channels.db import database_sync_to_async
 from .models import ChatSession, ChatMessage
@@ -37,6 +38,10 @@ EMPATHETIC_RESPONSES = [
     "Thank you for sharing that with me.",
     "It takes courage to talk about this.",
     "I'm here for you. We can work through this together.",
+    "I'm listening. Please take your time.",
+    "Your feelings are completely valid.",
+    "That makes a lot of sense. Thanks for opening up.",
+    "I appreciate your honesty. How can I best support you right now?"
 ]
 
 class ChatConsumer(AsyncWebsocketConsumer):
@@ -58,6 +63,12 @@ class ChatConsumer(AsyncWebsocketConsumer):
             self.channel_name
         )
         await self.accept()
+        
+        # Real-time online count simulation message
+        await self.send(text_data=json.dumps({
+            'type': 'system_update',
+            'online_staff': random.randint(3, 12)
+        }))
 
     async def disconnect(self, close_code):
         """Handle WebSocket disconnect."""
@@ -74,10 +85,22 @@ class ChatConsumer(AsyncWebsocketConsumer):
         """Handle incoming WebSocket message."""
         try:
             text_data_json = json.loads(text_data)
-            message_content = text_data_json.get('message', '').strip()
         except json.JSONDecodeError:
             return
+            
+        message_type = text_data_json.get('type', 'chat_message')
+        
+        # Handle mood updates directly
+        if message_type == 'mood_update':
+            emotion = text_data_json.get('mood', 'neutral')
+            # Echo back to confirm real-time
+            await self.send(text_data=json.dumps({
+                'type': 'mood_confirmation',
+                'message': f"Mood logged: {emotion}"
+            }))
+            return
 
+        message_content = text_data_json.get('message', '').strip()
         if not message_content:
             return
 
@@ -114,10 +137,25 @@ class ChatConsumer(AsyncWebsocketConsumer):
                 'message': resources.get('message', "Please seek help.")
             }))
         else:
+            # Send typing indicator immediately
+            await self.send(text_data=json.dumps({
+                'type': 'typing',
+                'is_typing': True
+            }))
+            
+            # Simulate real-time bot thinking
+            await asyncio.sleep(random.uniform(1.2, 2.5))
+            
             bot_response_text = random.choice(EMPATHETIC_RESPONSES)
             bot_message = await self.save_message(
                 self.session, 'BOT', bot_response_text, False, 'SAFE'
             )
+            
+            # Stop typing
+            await self.send(text_data=json.dumps({
+                'type': 'typing',
+                'is_typing': False
+            }))
             
             await self.channel_layer.group_send(
                 self.room_group_name,

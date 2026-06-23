@@ -126,6 +126,36 @@ document.addEventListener("DOMContentLoaded", () => {
         chatSocket.onmessage = function(e) {
             const data = JSON.parse(e.data);
             
+            if (data.type === 'system_update') {
+                const counter = document.getElementById('online-counter');
+                if (counter) counter.textContent = data.online_staff;
+                return;
+            }
+            
+            if (data.type === 'mood_confirmation') {
+                const feedback = document.getElementById('mood-feedback');
+                if (feedback) {
+                    feedback.textContent = data.message;
+                    feedback.classList.remove('hidden');
+                    feedback.classList.remove('opacity-0');
+                    setTimeout(() => {
+                        feedback.classList.add('opacity-0');
+                        setTimeout(() => feedback.classList.add('hidden'), 300);
+                    }, 3000);
+                }
+                return;
+            }
+            
+            if (data.type === 'typing') {
+                if (data.is_typing) {
+                    typingIndicator.classList.remove('hidden');
+                    scrollToBottom();
+                } else {
+                    typingIndicator.classList.add('hidden');
+                }
+                return;
+            }
+            
             if (data.type === 'crisis_intervention') {
                 typingIndicator.classList.add('hidden');
                 showCrisisModal(data.alert_type, data.resources, data.message);
@@ -153,14 +183,11 @@ document.addEventListener("DOMContentLoaded", () => {
         const message = input.value.trim();
         if (message && chatSocket.readyState === WebSocket.OPEN) {
             chatSocket.send(JSON.stringify({
+                'type': 'chat_message',
                 'message': message
             }));
             input.value = '';
-            
-            setTimeout(() => {
-                typingIndicator.classList.remove('hidden');
-                scrollToBottom();
-            }, 500);
+            scrollToBottom();
         }
     }
 
@@ -170,6 +197,19 @@ document.addEventListener("DOMContentLoaded", () => {
             e.preventDefault();
             sendMessage();
         }
+    });
+
+    // Setup mood tracker buttons
+    document.querySelectorAll('.mood-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const mood = this.getAttribute('data-mood');
+            if (chatSocket && chatSocket.readyState === WebSocket.OPEN) {
+                chatSocket.send(JSON.stringify({
+                    'type': 'mood_update',
+                    'mood': mood
+                }));
+            }
+        });
     });
 
     fetch(`/api/chat/${sessionId}/history/`)
