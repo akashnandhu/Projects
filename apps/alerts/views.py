@@ -10,6 +10,7 @@ from django.db.models import Count
 from django.views.generic import ListView, DetailView
 from .models import RiskAlert
 from django.utils import timezone
+from django.contrib import contenttypes
 
 class StaffRequiredMixin(UserPassesTestMixin):
     def test_func(self):
